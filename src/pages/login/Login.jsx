@@ -7,7 +7,7 @@ import "./login.scss";
 
 const Login = () => {
   const [credentials, setCredentials] = useState({
-    username: undefined,
+    userName: undefined,
     password: undefined,
   });
 
@@ -45,7 +45,7 @@ const Login = () => {
         <input
           type="text"
           placeholder="username"
-          id="username"
+          id="userName"
           onChange={handleChange}
           className="lInput"
         />

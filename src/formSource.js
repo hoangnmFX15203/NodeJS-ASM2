@@ -22,18 +22,18 @@ export const userInputs = [
     label: "Password",
     type: "password",
   },
-  {
-    id: "country",
-    label: "Country",
-    type: "text",
-    placeholder: "USA",
-  },
-  {
-    id: "city",
-    label: "City",
-    type: "text",
-    placeholder: "USA",
-  },
+  // {
+  //   id: "country",
+  //   label: "Country",
+  //   type: "text",
+  //   placeholder: "USA",
+  // },
+  // {
+  //   id: "city",
+  //   label: "City",
+  //   type: "text",
+  //   placeholder: "USA",
+  // },
 ];
 
 export const productInputs = [
