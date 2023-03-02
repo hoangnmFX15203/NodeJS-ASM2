@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 
 const transactionSchema = new Schema({
-    user: {
+    userId: {
         type: Schema.Types.ObjectId,
         ref: 'User',
         required: true,
     },
-    hotel: {
+    hotelId: {
         type: Schema.Types.ObjectId,
         ref: 'Hotel',
         required: true,

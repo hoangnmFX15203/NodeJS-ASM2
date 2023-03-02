@@ -1,5 +1,6 @@
 const Hotel = require('../models/Hotel');
 const Room = require('../models/Room');
+const Transaction = require('../models/Transaction');
 
 exports.createHotel = async (req, res, next) => {
     const newHotel = new Hotel(req.body);
@@ -21,12 +22,39 @@ exports.updateHotel = async (req, res, next) => {
 };
 
 exports.deleteHotel = async (req, res, next) => {
-    try {
-        await Hotel.findByIdAndRemove(req.params.id);
-        res.status(200).json('Deleted');
-    } catch (err) {
-        res.status(500).json(err);
+    const hotelId = req.params.id;
+    const nowDate = new Date();
+    let dateList = [];
+    const dateRange = Transaction.find({ hotelId: hotelId }, { endDate: 1 });
+    dateRange.toArray().forEach(function (date) {
+        dateList.push(date.endDate);
+    });
+    if (nơwDate.getTime() < Math.max(dateList)) {
+        try {
+            res.status(200).json('Van con khach thue phong');
+        } catch (err) {}
+    } else {
+        try {
+            await Hotel.findByIdAndRemove(req.params.id);
+            res.status(200).json('Deleted');
+        } catch (err) {}
     }
+    // const hotel = await Hotel.findById(hotelId);
+    // hotel.rooms.map((roomId) => {
+    //     Room.findById(roomId).map((rooms) =>
+    //         rooms.roomNumbers.map((room) => {
+    //             room.unavailableDates.map((date) => dateList.push(date.getTime()));
+    //         }),
+    //     );
+    // });
+    // console.log(dateList);
+
+    // try {
+    // await Hotel.findByIdAndRemove(req.params.id);
+    //     res.status(200).json('Deleted');
+    // } catch (err) {
+    // res.status(500).json(err);
+    // }
 };
 
 exports.getHotel = async (req, res, next) => {

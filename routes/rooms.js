@@ -8,10 +8,10 @@ const router = express.Router();
 // CREATE
 router.post('/:hotelId', verifyAdmin, roomController.createRoom);
 // UPDATE
-router.put('/:id', verifyAdmin, roomController.updateRoom);
 router.put('/availability/:id', roomController.updateAvailabilityRoom);
+router.put('/:id', verifyAdmin, roomController.updateRoom);
 // DELETE
-router.delete('/:id/:hotelId', verifyAdmin, roomController.deleteRoom);
+router.delete('/:id', verifyAdmin, roomController.deleteRoom);
 // GET
 router.get('/:id', roomController.getRoom);
 // GET ALL

@@ -30,6 +30,7 @@ exports.updateRoom = async (req, res, next) => {
 };
 
 exports.updateAvailabilityRoom = async (req, res, next) => {
+    console.log(req.body);
     try {
         await Room.updateOne(
             { 'roomNumbers._id': req.params.id },
@@ -39,12 +40,13 @@ exports.updateAvailabilityRoom = async (req, res, next) => {
         );
 
         const newTransaction = new Transaction({
-            userId: req.user.id,
+            userId: req.body.user._id,
             hotelId: req.body.hotelId,
             roomNumber: req.params.id,
             dateStart: req.body.dates[0],
-            dateEnd: req.body.dates[req.body.dates.length - 1],
+            endDate: req.body.dates[req.body.dates.length - 1],
             price: req.body.price,
+            payment: req.body.payment,
         });
         newTransaction.save();
     } catch (err) {
@@ -54,18 +56,40 @@ exports.updateAvailabilityRoom = async (req, res, next) => {
 
 exports.deleteRoom = async (req, res, next) => {
     const hotelId = req.params.hotelId;
-    try {
-        await Hotel.findByIdAndUpdate(hotelId, { $pull: { rooms: req.params.id } });
-    } catch (err) {
-        next(err);
+    const nowDate = new Date();
+    let dateList = [];
+    const rooms = await Room.findById(req.params.id);
+    rooms.roomNumbers.map((room) => {
+        room.unavailableDates.map((date) => dateList.push(date.getTime()));
+    });
+    if (nowDate.getTime() > Math.max(...dateList)) {
+        try {
+            await Hotel.findByIdAndUpdate(hotelId, { $pull: { rooms: req.params.id } });
+        } catch (err) {
+            next(err);
+        }
+        try {
+            await Room.findByIdAndRemove(req.params.id);
+            res.status(200).json(rooms);
+        } catch (err) {
+            res.status(500).json(err);
+        }
+    } else {
+        res.json('Van con khach dat phong');
     }
+    // if(date.getTime() > )
+    // try {
+    //     // await Hotel.findByIdAndUpdate(hotelId, { $pull: { rooms: req.params.id } });
+    // } catch (err) {
+    //     next(err);
+    // }
 
-    try {
-        await Room.findByIdAndRemove(req.params.id);
-        res.status(200).json('Deleted');
-    } catch (err) {
-        res.status(500).json(err);
-    }
+    // try {
+    //     // await Room.findByIdAndRemove(req.params.id);
+    //     res.status(200).json(rooms);
+    // } catch (err) {
+    //     res.status(500).json(err);
+    // }
 };
 
 exports.getRoom = async (req, res, next) => {

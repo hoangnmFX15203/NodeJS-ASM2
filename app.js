@@ -8,6 +8,7 @@ const authRoute = require('./routes/auth');
 const usersRoute = require('./routes/users');
 const hotelsRoute = require('./routes/hotels');
 const roomsRoute = require('./routes/rooms');
+const transactionRoute = require('./routes/transaction');
 
 const app = express();
 
@@ -31,6 +32,7 @@ app.use('/api/auth', authRoute);
 app.use('/api/hotels', hotelsRoute);
 app.use('/api/users', usersRoute);
 app.use('/api/rooms', roomsRoute);
+app.use('/api/transaction', transactionRoute);
 
 app.listen(5000, () => {
     connect();
