@@ -2,16 +2,19 @@ import React, { useContext, useState } from 'react';
 import { faCircleXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 import './reserve.css';
 import useFetch from './../../hook/useFetch';
 import { SearchContext } from './../../context/SearchContext';
-import { useNavigate } from 'react-router-dom';
+import { AuthContext } from './../../context/AuthContext';
 
 const Reserve = ({ setOpen, hotelId }) => {
+    const [payment, setPayment] = useState('');
     const [selectedRooms, setSelectedRooms] = useState([]);
     const { data, loading, error, reFetch } = useFetch(`/hotels/room/${hotelId}`);
     const { dates } = useContext(SearchContext);
+    const { user } = useContext(AuthContext);
 
     const getDatesInRange = (startDate, endDate) => {
         const start = new Date(startDate);
@@ -47,16 +50,28 @@ const Reserve = ({ setOpen, hotelId }) => {
             await Promise.all(
                 selectedRooms.map((roomId) => {
                     const roomPrice = data.map((item) => item.price);
-                    const res = axios.put(
-                        `/room/availability/${roomId}`,
-                        { dates: allDates },
-                        { hotelId: hotelId },
-                        { price: roomPrice },
-                    );
+                    let totalRoomPrice = 0;
+                    let totalPrice = 0;
+                    roomPrice.forEach((price) => (totalRoomPrice += price));
+                    totalPrice = totalRoomPrice * (allDates.length - 1) * selectedRooms.length;
+                    console.log({
+                        roomPrice: roomPrice,
+                        cost: totalPrice,
+                        dates: allDates.length,
+                        selectedRooms: selectedRooms.length,
+                    });
+                    const res = axios.put(`/rooms/availability/${roomId}`, {
+                        dates: allDates,
+                        hotelId: hotelId,
+                        price: totalPrice,
+                        payment: payment,
+                        user: user,
+                    });
                     return res.data;
                 }),
             );
             setOpen(false);
+
             navigate('/');
         } catch (err) {}
     };
@@ -68,29 +83,43 @@ const Reserve = ({ setOpen, hotelId }) => {
                 <span>Select your rooms:</span>
                 {data.map((item) => {
                     return (
-                        <div className="rItem">
-                            <div className="rItemInfo">
-                                <div className="rTitle">{item.title}</div>
-                                <div className="rDesc">{item.desc}</div>
-                                <div className="rMax">
-                                    Max people: <b>{item.maxPeople}</b>
+                        <>
+                            <div className="rItem">
+                                <div className="rItemInfo">
+                                    <div className="rTitle">{item.title}</div>
+                                    <div className="rDesc">{item.desc}</div>
+                                    <div className="rMax">
+                                        Max people: <b>{item.maxPeople}</b>
+                                    </div>
+                                    <div className="rPrice">{item.price}</div>
+                                    <div className="rSelected">
+                                        {item.roomNumbers.map((roomNumber) => (
+                                            <div className="room">
+                                                <label>{roomNumber.number}</label>
+                                                <input
+                                                    type="checkbox"
+                                                    value={roomNumber._id}
+                                                    onChange={handleSelect}
+                                                    disable={!isAvailable(roomNumber)}
+                                                />
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                                <div className="rPrice">{item.price}</div>
-                                <div className="rSelected">
-                                    {item.roomNumbers.map((roomNumber) => (
-                                        <div className="room">
-                                            <label>{roomNumber.number}</label>
-                                            <input
-                                                type="checkbox"
-                                                value={roomNumber._id}
-                                                onChange={handleSelect}
-                                                disable={!isAvailable(roomNumber)}
-                                            />
-                                        </div>
-                                    ))}
+                                <div className="rPayment">
+                                    <label>Choose your payment: </label>
+                                    <select
+                                        id="payment"
+                                        onChange={(e) => {
+                                            setPayment(e.target.value);
+                                        }}
+                                    >
+                                        <option value="cash">Cash</option>
+                                        <option value="credit">Credit Card</option>
+                                    </select>
                                 </div>
                             </div>
-                        </div>
+                        </>
                     );
                 })}
                 <button onClick={handleClick} className="rButton">

@@ -8,7 +8,7 @@ import { AuthContext } from './../../context/AuthContext';
 
 const Login = () => {
     const [credential, setCredential] = useState({
-        username: undefined,
+        userName: undefined,
         password: undefined,
     });
     const navigate = useNavigate();
@@ -16,14 +16,14 @@ const Login = () => {
     const { loading, error, dispatch } = useContext(AuthContext);
 
     const handleChange = (e) => {
-        setCredential((prev) => ({ ...prev, [e.target.id]: [e.target.value] }));
+        setCredential((prev) => ({ ...prev, [e.target.id]: e.target.value }));
     };
     const handleClick = async (e) => {
         e.preventDefault();
-        dispatch({ type: 'NEW_LOGIN' });
+        dispatch({ type: 'LOGIN_START' });
         try {
             const res = await axios.post('/auth/login', credential);
-            dispatch({ type: 'LOGIN_SUCCESS', payload: res.data });
+            dispatch({ type: 'LOGIN_SUCCESS', payload: res.data.details });
             navigate('/');
         } catch (error) {
             dispatch({ type: 'LOGIN_FAILURE', payload: error.response.data });
@@ -32,7 +32,7 @@ const Login = () => {
     return (
         <div className="login">
             <div className="lContainer">
-                <input type="text" placeholder="username" id="username" onChange={handleChange} className="lInput" />
+                <input type="text" placeholder="username" id="userName" onChange={handleChange} className="lInput" />
                 <input
                     type="password"
                     placeholder="password"

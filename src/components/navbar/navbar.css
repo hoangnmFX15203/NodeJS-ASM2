@@ -29,3 +29,13 @@
     background-color: aliceblue;
     text-decoration: none;
 }
+
+.btn {
+    background-color: #eef1f3;
+    text-decoration: none;
+    color: black;
+    font-weight: 500;
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+}

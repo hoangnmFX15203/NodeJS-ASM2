@@ -15,7 +15,17 @@ const Navbar = () => {
                         <span>lamabooking</span>
                     </Link>
                     {user ? (
-                        user.username
+                        <>
+                            <div className="navUser">{user.userName}</div>
+                            <div>
+                                <Link to={`/transaction/${user._id}`} className="btn">
+                                    Transaction
+                                </Link>
+                            </div>
+                            <div>
+                                <button>Log out</button>
+                            </div>
+                        </>
                     ) : (
                         <div className="navItems">
                             <Link to="/login" className="navButton">

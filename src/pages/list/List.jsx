@@ -5,7 +5,7 @@ import { useLocation } from 'react-router-dom';
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { DateRange } from 'react-date-range';
-import SearchItem from '../../components/searchItem/SearchItem';
+import SearchItem from '../../components/searchItem/SearchItem.jsx';
 import useFetch from './../../hook/useFetch';
 
 const List = () => {
@@ -103,9 +103,9 @@ const List = () => {
                             'loading'
                         ) : (
                             <>
-                                {data.map((item) => {
-                                    <SearchItem key={item._id} item={item} />;
-                                })}
+                                {data.map((item) => (
+                                    <SearchItem key={item._id} item={item} />
+                                ))}
                             </>
                         )}
                     </div>
