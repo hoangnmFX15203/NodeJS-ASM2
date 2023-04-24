@@ -13,6 +13,7 @@ const Reserve = ({ setOpen, hotelId }) => {
     const [payment, setPayment] = useState('');
     const [selectedRooms, setSelectedRooms] = useState([]);
     const { data, loading, error, reFetch } = useFetch(`/hotels/room/${hotelId}`);
+    console.log(data);
     const { dates } = useContext(SearchContext);
     const { user } = useContext(AuthContext);
 

@@ -21,7 +21,7 @@ const Hotel = () => {
 
     const { data, loading, error, reFetch } = useFetch(`/hotels/find/${id}`);
     const { dispatch, options, dates } = useContext(SearchContext);
-    // console.log(options);
+    console.log(dates);
     const { user } = useContext(AuthContext);
     const navigate = useNavigate();
 
