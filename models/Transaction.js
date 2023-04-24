@@ -39,4 +39,8 @@ const transactionSchema = new Schema({
     },
 });
 
+transactionSchema.post('save', function (doc) {
+    return doc.populate('hotelId').execPopulate();
+});
+
 module.exports = mongoose.model('Transaction', transactionSchema);

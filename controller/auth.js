@@ -3,11 +3,13 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 exports.register = async (req, res, next) => {
+    console.log(req.body)
     try {
         const newUser = new User({
-            userName: req.body.username,
+            username: req.body.username,
             email: req.body.email,
             password: req.body.password,
+            isAdmin: false,
         });
         await newUser.save();
         res.status(200).json(newUser);

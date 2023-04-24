@@ -120,7 +120,8 @@ exports.getHotelRooms = async (req, res, next) => {
                 return Room.findById(room);
             }),
         );
-        res.status(200).json(list);
+        const result = list.filter((value) => value !== null);
+        res.status(200).json(result);
     } catch (err) {
         res.status(500).json(err);
     }
