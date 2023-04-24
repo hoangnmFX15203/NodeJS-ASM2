@@ -2,23 +2,20 @@ import './transaction.css';
 import { useContext, useEffect, useState } from 'react';
 import { AuthContext } from './../../context/AuthContext';
 import useFetch from '../../hook/useFetch';
+import moment from 'moment';
 
 const Transaction = () => {
     const { user } = useContext(AuthContext);
     const { data, loading, error, reFetch } = useFetch(`/transaction/${user._id}`);
-    const [transaction, setTransaction] = useState([data]);
-    console.log(data);
-    useEffect(() => {
-        setTransaction(data);
-    }, [data]);
 
     return (
         <>
             <div className="tContainer">
                 {loading
                     ? 'loading'
-                    : transaction.map((item) => {
-                          console.log(item);
+                    : data.map((item, index) => {
+                          const startDate = moment(item.dateStart).format('DD/MM/YYYY');
+                          const endDate = moment(item.endDate).format('DD/MM/YYYY');
                           return (
                               <div className="tContent">
                                   <table>
@@ -32,9 +29,16 @@ const Transaction = () => {
                                           <th>Status</th>
                                       </thead>
                                       <tbody>
-                                          <tr>
-                                              <td></td>
-                                              <td>{item.hotels.map((hotel) => hotel.name)}</td>
+                                          <tr key={index}>
+                                              <td>{index + 1}</td>
+                                              <td>{item.hotel}</td>
+                                              <td>{item.rooms.join(',')}</td>
+                                              <td>
+                                                  {startDate} - {endDate}
+                                              </td>
+                                              <td>{item.price}</td>
+                                              <td>{item.payment ? item.payment : 'cash'}</td>
+                                              <td>{item.status}</td>
                                           </tr>
                                       </tbody>
                                   </table>
