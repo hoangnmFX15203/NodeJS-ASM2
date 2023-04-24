@@ -21,32 +21,55 @@ exports.deleteHotel = async (req, res, next) => {
     // }
 };
 
-exports.getTransactions = async (req, res, next) => {
+exports.getTransactionsByUserId = async (req, res, next) => {
     try {
         const transactions = await Transaction.find({ userId: req.params.userId });
-        const hotelId = transactions.map((transaction) => transaction.hotelId);
-        const roomId = transactions.map((transaction) => transaction.roomId);
-        const hotels = await Hotel.find({ _id: { $in: hotelId } });
-        const room = await Room.find({ 'roomNumbers.id': { $in: roomId } });
-        const roomNumber = [];
-        let roomPrice;
-        room.map((item) => {
-            const price = item.price;
-            item.roomNumbers.map((rooms) => {
-                if (rooms.number) {
-                    roomNumber.push(rooms.number);
-                }
-            });
-        });
-        console.log(hotels);
-        const hotelName = [];
-        hotels.map((hotel) => {
-            if (hotel.name) {
-                hotelName.push(hotel.name);
-            }
-        });
+        const result = [];
 
-        res.status(200).json({ room: roomNumber, hotels: hotels, transaction: transactions });
+        // const hotelId = transactions.map((transaction) => transaction.hotelId);
+        // const roomId = transactions.map((transaction) => transaction.roomId);
+        for (let transaction of transactions) {
+            const hotel = await Hotel.findById(transaction.hotelId);
+            const room = await Room.find({ 'roomNumbers.id': { $in: transaction.roomId } });
+            let roomNumber = [];
+            room.map((item) => {
+                item.roomNumbers.map((rooms) => {
+                    if (rooms.number) {
+                        roomNumber.push(rooms.number);
+                    }
+                });
+            });
+            result.push({
+                hotel: hotel.name,
+                rooms: roomNumber,
+                price: transaction.price,
+                dateStart: transaction.dateStart,
+                dateEnd: transaction.endDate,
+                status: transaction.status,
+                payment: transaction.payment,
+            });
+            console.log(transaction);
+        }
+        res.status(200).json(result);
+        // const hotels = await Hotel.findById(hotelId);
+        // const room = await Room.find({ 'roomNumbers.id': { $in: roomId } });
+        // const roomNumber = [];
+        // let roomPrice;
+        // room.map((item) => {
+        //     const price = item.price;
+        //     item.roomNumbers.map((rooms) => {
+        //         if (rooms.number) {
+        //             roomNumber.push(rooms.number);
+        //         }
+        //     });
+        // });
+        // console.log(hotels);
+        // const hotelName = [];
+        // hotels.map((hotel) => {
+        //     if (hotel.name) {
+        //         hotelName.push(hotel.name);
+        //     }
+        // });
     } catch (err) {
         res.status(500).json(err);
     }

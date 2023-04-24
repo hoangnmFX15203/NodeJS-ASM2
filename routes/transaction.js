@@ -7,6 +7,6 @@ const transactionController = require('../controller/transaction');
 const router = express.Router();
 
 // get transaction by user
-router.get('/:userId', transactionController.getTransactions);
+router.get('/:userId', transactionController.getTransactionsByUserId);
 
 module.exports = router;
