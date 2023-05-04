@@ -1,5 +1,6 @@
 const Transaction = require('../models/Transaction');
 const Hotel = require('../models/Hotel');
+const User = require('../models/User');
 // import Hotel from './../../2.FE/src/pages/hotel/Hotel';
 const Room = require('../models/Room');
 
@@ -19,6 +20,54 @@ exports.deleteHotel = async (req, res, next) => {
     // } catch (err) {
     //     res.status(500).json(err);
     // }
+};
+
+exports.getTransaction = async (req, res, next) => {
+    try {
+        const result = [];
+        const transactions = await Transaction.find();
+        for (let transaction of transactions) {
+            const hotel = await Hotel.findById(transaction.hotelId);
+            const room = await Room.find({ 'roomNumbers.id': { $in: transaction.roomId } });
+            let roomNumber = [];
+            room.map((item) => {
+                item.roomNumbers.map((rooms) => {
+                    if (rooms.number) {
+                        roomNumber.push(rooms.number);
+                    }
+                });
+            });
+            const user = await User.findById(transaction.userId);
+            if (user) {
+                result.push({
+                    id: transaction._id,
+                    hotel: hotel.name,
+                    rooms: roomNumber,
+                    price: transaction.price,
+                    dateStart: transaction.dateStart,
+                    dateEnd: transaction.endDate,
+                    status: transaction.status,
+                    payment: transaction.payment,
+                    user: user.userName ? user.userName : user.username,
+                });
+            } else {
+                result.push({
+                    id: transaction._id,
+                    hotel: hotel.name,
+                    rooms: roomNumber,
+                    price: transaction.price,
+                    dateStart: transaction.dateStart,
+                    dateEnd: transaction.endDate,
+                    status: transaction.status,
+                    payment: transaction.payment,
+                    user: null,
+                });
+            }
+        }
+        res.status(200).json(result);
+    } catch (err) {
+        console.log(err);
+    }
 };
 
 exports.getTransactionsByUserId = async (req, res, next) => {
