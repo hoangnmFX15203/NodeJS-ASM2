@@ -40,9 +40,9 @@ exports.getTransaction = async (req, res, next) => {
             const user = await User.findById(transaction.userId);
             if (user) {
                 result.push({
-                    id: transaction._id,
+                    _id: transaction._id,
                     hotel: hotel.name,
-                    rooms: roomNumber,
+                    rooms: roomNumber.join(','),
                     price: transaction.price,
                     dateStart: transaction.dateStart,
                     dateEnd: transaction.endDate,
@@ -52,7 +52,7 @@ exports.getTransaction = async (req, res, next) => {
                 });
             } else {
                 result.push({
-                    id: transaction._id,
+                    _id: transaction._id,
                     hotel: hotel.name,
                     rooms: roomNumber,
                     price: transaction.price,

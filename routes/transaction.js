@@ -7,7 +7,7 @@ const transactionController = require('../controller/transaction');
 const router = express.Router();
 
 // get transactions
-router.get('/transactions', transactionController.getTransaction);
+router.get('/', transactionController.getTransaction);
 
 // get transaction by user
 router.get('/:userId', transactionController.getTransactionsByUserId);
