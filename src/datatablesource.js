@@ -7,7 +7,11 @@ export const userColumns = [
     renderCell: (params) => {
       return (
         <div className="cellWithImg">
-          <img className="cellImg" src={params.row.img || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"} alt="avatar" />
+          <img
+            className="cellImg"
+            src={params.row.img || "https://i.ibb.co/MBtjqXQ/no-avatar.gif"}
+            alt="avatar"
+          />
           {params.row.username}
         </div>
       );
@@ -70,6 +74,40 @@ export const roomColumns = [
   {
     field: "maxPeople",
     headerName: "Max People",
+    width: 100,
+  },
+];
+
+export const transactionColumns = [
+  { field: "_id", headerName: "ID", width: 70 },
+  {
+    field: "user",
+    headerName: "User",
+    width: 100,
+  },
+  {
+    field: "hotel",
+    headerName: "Hotel",
+    width: 200,
+  },
+  {
+    field: "rooms",
+    headerName: "Room",
+    width: 75,
+  },
+  {
+    field: "dates",
+    headerName: "dates",
+    width: 100,
+  },
+  {
+    field: "price",
+    headerName: "Price",
+    width: 75,
+  },
+  {
+    field: "payment",
+    headerName: "Payment Method",
     width: 100,
   },
 ];
