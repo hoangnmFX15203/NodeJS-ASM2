@@ -21,6 +21,7 @@ const Login = () => {
 
   const handleClick = async (e) => {
     e.preventDefault();
+    console.log(credentials);
     dispatch({ type: "LOGIN_START" });
     try {
       const res = await axios.post("/auth/login", credentials);
